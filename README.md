@@ -10,7 +10,8 @@
 
 | Field | Keterangan |
 |---|---|
-| Nama, NIP, Email | Selalu diisi |
+| Nama, Email | Selalu diisi |
+| NIP | Hanya Jika PNS/PPPK |
 | Status Pegawai | PNS / PPPK / Non-ASN |
 | Golongan | Opsional, contoh: III/a (relevan terutama untuk PNS) |
 | Jenis Jabatan | Hanya muncul jika status PNS/PPPK: Fungsional / Struktural / Pelaksana |
