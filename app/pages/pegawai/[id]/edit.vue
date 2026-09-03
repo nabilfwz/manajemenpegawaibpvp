@@ -6,7 +6,14 @@ const loading = ref(false)
 const errors = ref<Record<string, string[]>>({})
 const id = route.params.id as string
 
-const { data: pegawai } = await useFetch(`/api/pegawai/${id}`)
+const { data: pegawaiRes } = await useFetch(`/api/pegawai/${id}`)
+
+// normalisasi: dukung baik response langsung objek maupun ter-wrap { data: {...} }
+const pegawai = computed(() => {
+  const raw = pegawaiRes.value as any
+  if (!raw) return null
+  return raw.data ?? raw
+})
 
 if (!pegawai.value) {
   throw createError({ statusCode: 404, statusMessage: 'Pegawai tidak ditemukan' })

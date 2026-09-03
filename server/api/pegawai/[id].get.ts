@@ -3,7 +3,6 @@ export default defineEventHandler(async (event) => {
 
   const pegawai = await prisma.pegawai.findUnique({
     where: { id },
-    include: { departemen: true }
   })
 
   if (!pegawai) {
