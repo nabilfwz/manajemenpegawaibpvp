@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StatusKepegawaian {
+  PNS
+  PPPK
+  NON_ASN
+}
+
+enum JenisJabatan {
+  FUNGSIONAL
+  STRUKTURAL
+  PELAKSANA
+}
+
+model Pegawai {
+  id     String            @id @default(cuid())
+  nama   String
+  nip    String?           @unique
+  email  String            @unique
+  status StatusKepegawaian
+
+  // Hanya diisi jika status = PNS atau PPPK (ASN)
+  jenisJabatan JenisJabatan?
+
+  // Diisi jika jenisJabatan = FUNGSIONAL
+  namaJabatanFungsional String?
+  jenjangFungsional     String?
+
+  // Diisi jika jenisJabatan = PELAKSANA
+  namaJabatanPelaksana String?
+  jenjangPelaksana     String?
+
+  // Diisi jika jenisJabatan = STRUKTURAL
+  jabatanStruktural String?
+
+  // Diisi jika status = NON_ASN
+  jabatanNonAsn String?
+
+  // Relevan terutama untuk PNS, format contoh: "III/a"
+  golongan String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
