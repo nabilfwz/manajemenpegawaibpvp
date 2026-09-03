@@ -4,7 +4,7 @@ const totalPegawai = computed(() => data.value?.meta.total ?? 0)
 </script>
 
 <template>
-  <div>
+  <div class="p-4 sm:p-6">
     <h1 class="text-2xl font-semibold mb-6">Dashboard</h1>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <UCard>

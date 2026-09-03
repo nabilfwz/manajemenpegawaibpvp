@@ -42,8 +42,8 @@ async function simpan() {
 </script>
 
 <template>
-  <div>
-    <h1 class="text-2xl font-semibold mb-6">Tambah Pegawai</h1>
-    <FormPegawai v-model="form" submit-label="Simpan Pegawai" :loading="loading" :errors="errors" @submit="simpan" />
+  <div class="p-4 sm:p-6">
+    <h1 class="text-xl sm:text-2xl font-semibold mb-6">Edit Pegawai</h1>
+    <FormPegawai v-model="form" submit-label="Simpan Perubahan" :loading="loading" :errors="errors" @submit="simpan" />
   </div>
 </template>

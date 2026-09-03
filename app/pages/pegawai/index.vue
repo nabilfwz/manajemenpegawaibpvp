@@ -60,20 +60,20 @@ async function hapusPegawai(id: string, nama: string) {
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center justify-between mb-6">
+  <div class="p-4 sm:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
       <h1 class="text-2xl font-semibold">Data Pegawai</h1>
-      <UButton to="/pegawai/tambah" icon="i-lucide-plus">
+      <UButton to="/pegawai/tambah" icon="i-lucide-plus" block class="sm:w-auto">
         Tambah Pegawai
       </UButton>
     </div>
 
-    <div class="flex gap-3 mb-4">
+    <div class="flex flex-col sm:flex-row gap-3 mb-4">
       <UInput
         v-model="search"
         placeholder="Cari nama, NIP, atau email..."
         icon="i-lucide-search"
-        class="max-w-sm"
+        class="w-full sm:max-w-sm"
       />
       <USelectMenu
         v-model="filterStatus"
@@ -81,11 +81,17 @@ async function hapusPegawai(id: string, nama: string) {
         value-key="value"
         searchable
         placeholder="Filter status"
-        class="w-48"
+        class="w-full sm:w-48"
       />
     </div>
 
-    <UTable :data="data?.data" :columns="columns" :loading="status === 'pending'">
+    <!-- DESKTOP: tabel biasa, disembunyikan di HP -->
+    <UTable
+      :data="data?.data"
+      :columns="columns"
+      :loading="status === 'pending'"
+      class="hidden sm:block"
+    >
       <template #status-cell="{ row }">
         <UBadge :color="statusColor[row.original.status]" variant="subtle">
           {{ statusLabel[row.original.status] }}
@@ -115,6 +121,54 @@ async function hapusPegawai(id: string, nama: string) {
         </div>
       </template>
     </UTable>
+
+    <!-- MOBILE: card list, disembunyikan di desktop -->
+    <div class="sm:hidden space-y-3">
+      <div v-if="status === 'pending'" class="space-y-3">
+        <USkeleton v-for="i in 4" :key="i" class="h-24 w-full rounded-lg" />
+      </div>
+
+      <p v-else-if="!data?.data?.length" class="text-center text-gray-500 py-8">
+        Tidak ada data pegawai
+      </p>
+
+      <UCard v-for="row in data?.data" :key="row.id" :ui="{ body: 'p-4' }">
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0">
+            <p class="font-medium truncate">{{ row.nama }}</p>
+            <p class="text-sm text-gray-500 truncate">{{ row.nip || '-' }}</p>
+          </div>
+          <UBadge :color="statusColor[row.status]" variant="subtle" class="shrink-0">
+            {{ statusLabel[row.status] }}
+          </UBadge>
+        </div>
+
+        <div class="mt-3 text-sm space-y-1">
+          <p class="text-gray-700">{{ jabatanLabel(row) }}</p>
+          <p v-if="row.golongan" class="text-gray-500">Golongan {{ row.golongan }}</p>
+        </div>
+
+        <div class="mt-3 flex gap-2 justify-end border-t border-gray-100 pt-3">
+          <UButton
+            :to="`/pegawai/${row.id}/edit`"
+            icon="i-lucide-pencil"
+            variant="ghost"
+            size="sm"
+          >
+            Edit
+          </UButton>
+          <UButton
+            icon="i-lucide-trash-2"
+            variant="ghost"
+            color="error"
+            size="sm"
+            @click="hapusPegawai(row.id, row.nama)"
+          >
+            Hapus
+          </UButton>
+        </div>
+      </UCard>
+    </div>
 
     <div v-if="data?.meta && data.meta.totalPages > 1" class="mt-4 flex justify-center">
       <UPagination v-model:page="page" :total="data.meta.total" :items-per-page="data.meta.pageSize" />

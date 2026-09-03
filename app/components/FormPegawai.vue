@@ -139,49 +139,49 @@ watch(() => form.value.jenisJabatan, (jenis) => {
 </script>
 
 <template>
-  <form class="space-y-4 max-w-lg" @submit.prevent="emit('submit')">
-    <!-- 1. Nama -->
-    <UFormField label="Nama Lengkap" required :error="errFor('nama')">
-      <UInput v-model="form.nama" placeholder="Nama pegawai" class="w-full" />
-    </UFormField>
+  <form class="space-y-4 max-w-2xl" @submit.prevent="emit('submit')">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- 1. Nama -->
+      <UFormField label="Nama Lengkap" required :error="errFor('nama')" class="sm:col-span-2">
+        <UInput v-model="form.nama" placeholder="Nama pegawai" class="w-full" />
+      </UFormField>
 
-    <!-- 2. Status pegawai -->
-    <UFormField label="Status Pegawai" required :error="errFor('status')">
-      <USelectMenu
-        v-model="form.status"
-        :items="statusOptions"
-        value-key="value"
-        searchable
-        placeholder="Pilih status"
-        class="w-full"
-      />
-    </UFormField>
+      <!-- 2. Status pegawai -->
+      <UFormField label="Status Pegawai" required :error="errFor('status')">
+        <USelectMenu
+          v-model="form.status"
+          :items="statusOptions"
+          value-key="value"
+          searchable
+          placeholder="Pilih status"
+          class="w-full"
+        />
+      </UFormField>
 
-    <!-- 3. NIP — hanya untuk ASN (PNS/PPPK), Non-ASN skip -->
-    <UFormField v-if="isAsn" label="NIP" required :error="errFor('nip')">
-      <UInput v-model="form.nip" placeholder="Nomor Induk Pegawai" class="w-full" />
-    </UFormField>
+      <!-- 3. NIP — hanya untuk ASN -->
+      <UFormField v-if="isAsn" label="NIP" required :error="errFor('nip')">
+        <UInput v-model="form.nip" placeholder="Nomor Induk Pegawai" class="w-full" />
+      </UFormField>
 
-    <UFormField label="Email" required :error="errFor('email')">
-      <UInput v-model="form.email" type="email" placeholder="nama@instansi.go.id" class="w-full" />
-    </UFormField>
+      <UFormField label="Email" required :error="errFor('email')" :class="isAsn ? '' : 'sm:col-span-2'">
+        <UInput v-model="form.email" type="email" placeholder="nama@instansi.go.id" class="w-full" />
+      </UFormField>
 
-    <!-- 4. Golongan — hanya relevan untuk ASN -->
-    <UFormField v-if="isAsn" label="Golongan" hint="Ketik untuk mencari, contoh: III/a">
-      <USelectMenu
-        v-model="form.golongan"
-        :items="golonganOptions"
-        value-key="value"
-        searchable
-        searchable-placeholder="Cari golongan..."
-        placeholder="Pilih golongan"
-        class="w-full"
-      />
-    </UFormField>
+      <!-- 4. Golongan — hanya ASN -->
+      <UFormField v-if="isAsn" label="Golongan" hint="Ketik untuk mencari, contoh: III/a">
+        <USelectMenu
+          v-model="form.golongan"
+          :items="golonganOptions"
+          value-key="value"
+          searchable
+          searchable-placeholder="Cari golongan..."
+          placeholder="Pilih golongan"
+          class="w-full"
+        />
+      </UFormField>
 
-    <!-- 5. Jenis jabatan untuk ASN -->
-    <template v-if="isAsn">
-      <UFormField label="Jenis Jabatan" required :error="errFor('jenisJabatan')">
+      <!-- 5. Jenis jabatan -->
+      <UFormField v-if="isAsn" label="Jenis Jabatan" required :error="errFor('jenisJabatan')">
         <USelectMenu
           v-model="form.jenisJabatan"
           :items="jenisJabatanOptions"
@@ -192,8 +192,8 @@ watch(() => form.value.jenisJabatan, (jenis) => {
         />
       </UFormField>
 
-      <template v-if="form.jenisJabatan === 'FUNGSIONAL'">
-        <UFormField label="Nama Jabatan Fungsional" required :error="errFor('namaJabatanFungsional')" hint="Cari atau ketik nama jabatan baru">
+      <template v-if="isAsn && form.jenisJabatan === 'FUNGSIONAL'">
+        <UFormField label="Nama Jabatan Fungsional" required :error="errFor('namaJabatanFungsional')" hint="Cari atau ketik jabatan baru">
           <USelectMenu
             v-model="form.namaJabatanFungsional"
             :items="jabatanFungsionalOptions"
@@ -217,8 +217,8 @@ watch(() => form.value.jenisJabatan, (jenis) => {
         </UFormField>
       </template>
 
-      <template v-else-if="form.jenisJabatan === 'PELAKSANA'">
-        <UFormField label="Nama Jabatan Pelaksana" required :error="errFor('namaJabatanPelaksana')" hint="Cari atau ketik nama jabatan baru">
+      <template v-else-if="isAsn && form.jenisJabatan === 'PELAKSANA'">
+        <UFormField label="Nama Jabatan Pelaksana" required :error="errFor('namaJabatanPelaksana')" hint="Cari atau ketik jabatan baru">
           <USelectMenu
             v-model="form.namaJabatanPelaksana"
             :items="jabatanPelaksanaOptions"
@@ -242,8 +242,8 @@ watch(() => form.value.jenisJabatan, (jenis) => {
         </UFormField>
       </template>
 
-      <template v-else-if="form.jenisJabatan === 'STRUKTURAL'">
-        <UFormField label="Jabatan Struktural" required :error="errFor('jabatanStruktural')" hint="Cari atau ketik nama jabatan baru">
+      <template v-else-if="isAsn && form.jenisJabatan === 'STRUKTURAL'">
+        <UFormField label="Jabatan Struktural" required :error="errFor('jabatanStruktural')" hint="Cari atau ketik jabatan baru" class="sm:col-span-2">
           <USelectMenu
             v-model="form.jabatanStruktural"
             :items="jabatanStrukturalOptions"
@@ -256,19 +256,19 @@ watch(() => form.value.jenisJabatan, (jenis) => {
           />
         </UFormField>
       </template>
-    </template>
 
-    <!-- Non-ASN: langsung ke jabatan -->
-    <UFormField v-else-if="form.status === 'NON_ASN'" label="Jabatan" required :error="errFor('jabatanNonAsn')" hint="Contoh: Pramubakti, Satpam">
-      <UInput v-model="form.jabatanNonAsn" placeholder="Contoh: Pramubakti, Satpam" class="w-full" />
-    </UFormField>
+      <!-- Non-ASN -->
+      <UFormField v-if="form.status === 'NON_ASN'" label="Jabatan" required :error="errFor('jabatanNonAsn')" hint="Contoh: Pramubakti, Satpam" class="sm:col-span-2">
+        <UInput v-model="form.jabatanNonAsn" placeholder="Contoh: Pramubakti, Satpam" class="w-full" />
+      </UFormField>
+    </div>
 
-    <div class="flex gap-2 pt-2">
-      <UButton type="submit" :loading="loading">
-        {{ submitLabel ?? 'Simpan' }}
-      </UButton>
-      <UButton to="/pegawai" variant="ghost" color="neutral">
+    <div class="flex flex-col-reverse sm:flex-row gap-2 pt-2">
+      <UButton to="/pegawai" variant="ghost" color="neutral" block class="sm:w-auto">
         Batal
+      </UButton>
+      <UButton type="submit" :loading="loading" block class="sm:w-auto">
+        {{ submitLabel ?? 'Simpan' }}
       </UButton>
     </div>
   </form>
